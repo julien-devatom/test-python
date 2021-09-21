@@ -1,0 +1,6 @@
+click==8.0.1
+coverage==5.5
+joblib==1.0.1
+nltk==3.6.3
+regex==2021.8.28
+tqdm==4.62.3
