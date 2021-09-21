@@ -475,14 +475,27 @@ class TestCRUD(unittest.TestCase):
     def test_remove_group_member_Returns_false_for_invalid_id(
             self, mock_read_groups_file, mock_modify_groups_file
     ):
-        pass
+        mock_read_groups_file.return_value = self.groups_data
+        crud = CRUD()
+        self.assertFalse(crud.remove_group_member(10 , 'alex@gmail.com'))
+
+        # On peut vérifier que la méthode mock_modify_groups_file n'est pas appelée
+        mock_modify_groups_file.assert_not_called()
 
     @patch("crud.CRUD.modify_groups_file")
     @patch("crud.CRUD.read_groups_file")
     def test_remove_group_member_Returns_false_for_invalid_group_member(
             self, mock_read_groups_file, mock_modify_groups_file
     ):
-        pass
+        mock_read_groups_file.return_value = self.groups_data
+        crud = CRUD()
+        self.assertFalse(crud.remove_group_member(1, 'not_a_member@example.com'))
+
+        # on test un utilisateur existant mais qui n'appartient pas au groupe renseigné
+        self.assertFalse(crud.remove_group_member(2, 'mark@mail.com')) # mark n'est pas dans friends
+
+        # On peut vérifier que la méthode mock_modify_groups_file n'est pas appelée
+        mock_modify_groups_file.assert_not_called()
 
     @patch("crud.CRUD.modify_groups_file")
     @patch("crud.CRUD.read_groups_file")
