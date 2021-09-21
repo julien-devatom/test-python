@@ -269,8 +269,6 @@ class CRUD:
         # Get user and check field validity
         if field not in self.users_data[user_id]:
             return False
-
-        print("OK")
         try:
             # Update data
             if field == "name":

@@ -64,7 +64,8 @@ class VocabularyCreator:
                 is_spam     = True
 
             # Analyze the subject 
-            subject = self.cleaning.clean_text(subject)
+            subject = self.clean_text(subject)
+
             if is_spam:
                 for wd in subject:
                     total_occ_spam_sub += 1
@@ -83,7 +84,7 @@ class VocabularyCreator:
                         occ_ham_sub[wd] += 1
 
             # Analyze the body
-            body = self.cleaning.clean_text(body)
+            body = self.clean_text(body)
             if is_spam:
                 for wd in body:
                     total_occ_spam_bod += 1
@@ -121,12 +122,12 @@ class VocabularyCreator:
         print("\n")
         return True
 
-    def load_dict(self):
+    def load_dict(self):  # pragma: no cover
         with open(self.train_set) as json_data:
             data_dict = json.load(json_data)
         return data_dict
 
-    def write_data_to_vocab_file(self, vocab):
+    def write_data_to_vocab_file(self, vocab):  # pragma: no cover
         try:
             with open(self.vocabulary, "w") as outfile:
                 json.dump(vocab, outfile)
@@ -135,5 +136,5 @@ class VocabularyCreator:
         except:
             return False
     
-    def clean_text(self, text):
+    def clean_text(self, text):  # pragma: no cover
         return self.cleaning.clean_text(text)
