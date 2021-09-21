@@ -18,7 +18,7 @@ class TestCRUD(unittest.TestCase):
                 "HamN": 20,
                 "Date_of_first_seen_message": 1596844800.0,
                 "Date_of_last_seen_message": 1596844800.0,
-                "Groups": ["default"],
+                "Groups": ["default", "friends"],
             },
             "2": {
                 "name": "mark@mail.com",
@@ -396,19 +396,45 @@ class TestCRUD(unittest.TestCase):
         }
         mock_modify_users_file.assert_called_once_with(new_users_data)
 
+    @patch("crud.CRUD.modify_groups_file")
+    @patch("crud.CRUD.read_groups_file")
     @patch("crud.CRUD.modify_users_file")
     @patch("crud.CRUD.read_users_file")
     def test_remove_user_group_Returns_false_for_invalid_id(
-            self, mock_read_users_file, mock_modify_users_file
+            self, mock_read_users_file, mock_modify_users_file, mock_read_groups_file,
+            mock_modify_groups_file
     ):
-        pass
 
+        mock_read_users_file.return_value = self.users_data
+        mock_read_groups_file.return_value = self.groups_data
+        crud = CRUD()
+        self.assertFalse(crud.remove_user_group(10, 'default'))
+
+        # On peut vérifier que la méthode modify_groups_file & modify_user_file ne sont pas appelées
+        mock_modify_users_file.assert_not_called()
+        mock_modify_groups_file.assert_not_called()
+
+    @patch("crud.CRUD.modify_groups_file")
+    @patch("crud.CRUD.read_groups_file")
     @patch("crud.CRUD.modify_users_file")
     @patch("crud.CRUD.read_users_file")
     def test_remove_user_group_Returns_false_for_invalid_group(
-            self, mock_read_users_file, mock_modify_users_file
+            self, mock_read_users_file, mock_modify_users_file, mock_read_groups_file,
+            mock_modify_groups_file
     ):
-        pass
+        mock_read_users_file.return_value = self.users_data
+        mock_read_groups_file.return_value = self.groups_data
+        crud = CRUD()
+
+        # on vérifie avec un groupe qui n'existe pas
+        self.assertFalse(crud.remove_user_group(1, 'not_existing_group'))
+
+        # et un groupe qui ne contient pas l'utilisateur
+        self.assertFalse(crud.remove_user_group(2, 'friends')) # 2 n'est pas dans le groupe friends
+
+        # On peut vérifier que la méthode modify_groups_file & modify_user_file ne sont pas appelées
+        mock_modify_users_file.assert_not_called()
+        mock_modify_groups_file.assert_not_called()
 
     @patch("crud.CRUD.modify_users_file")
     @patch("crud.CRUD.read_users_file")
