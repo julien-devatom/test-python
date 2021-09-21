@@ -533,3 +533,84 @@ class TestCRUD(unittest.TestCase):
         crud = CRUD()
         self.assertEqual(crud.convert_to_unix("2021-09-10"), 1631232000.0)
 
+
+    @patch("crud.CRUD.modify_users_file")
+    @patch("crud.CRUD.read_users_file")
+    def test_add_new_user_with_an_existing_name_Returns_False(self,
+        mock_read_users_file, mock_modify_users_file):
+
+        mock_read_users_file.return_value = self.users_data
+        crud = CRUD()
+        self.assertFalse(crud.add_new_user('alex@gmail.com', '2021-09-10'))
+        mock_modify_users_file.assert_not_called()
+
+    @patch("crud.CRUD.modify_users_file")
+    @patch("crud.CRUD.read_users_file")
+    def test_add_new_user_with_invalid_email_format_Returns_False(self,
+        mock_read_users_file, mock_modify_users_file):
+
+        mock_read_users_file.return_value = self.users_data
+        crud = CRUD()
+        self.assertFalse(crud.add_new_user('not_an_email', '2021-09-10'))
+        mock_modify_users_file.assert_not_called()
+
+    @patch("crud.CRUD.modify_users_file")
+    @patch("crud.CRUD.read_users_file")
+    def test_update_users_with_invalid_email_format_Returns_False(self,
+        mock_read_users_file, mock_modify_users_file):
+
+        mock_read_users_file.return_value = self.users_data
+        crud = CRUD()
+        self.assertFalse(crud.update_users(1, "name", "not_an_email"))
+        mock_modify_users_file.assert_not_called()
+
+    @patch("crud.CRUD.modify_users_file")
+    @patch("crud.CRUD.read_users_file")
+    def test_update_users_with_invalid_Date_of_last_seen_message_Returns_False(self,
+        mock_read_users_file, mock_modify_users_file):
+
+        mock_read_users_file.return_value = self.users_data
+        crud = CRUD()
+        self.assertFalse(crud.update_users(1, "Date_of_last_seen_message", "1900-06-06"))
+        mock_modify_users_file.assert_not_called()
+
+    @patch("crud.CRUD.modify_users_file")
+    @patch("crud.CRUD.read_users_file")
+    def test_update_users_with_invalid_Date_of_first_seen_message_Returns_False(self,
+        mock_read_users_file, mock_modify_users_file):
+
+        mock_read_users_file.return_value = self.users_data
+        crud = CRUD()
+        self.assertFalse(crud.update_users(1, "Date_of_first_seen_message", "2200-06-06"))
+        mock_modify_users_file.assert_not_called()
+
+    @patch("crud.CRUD.modify_users_file")
+    @patch("crud.CRUD.read_users_file")
+    def test_update_users_with_invalid_Trust_value_Returns_False(self,
+        mock_read_users_file, mock_modify_users_file):
+
+        mock_read_users_file.return_value = self.users_data
+        crud = CRUD()
+        self.assertFalse(crud.update_users(1, "Trust", -10)) # Trust doit être entre 0 et 100
+        self.assertFalse(crud.update_users(1, "Trust", 101)) # Trust doit être entre 0 et 100
+        mock_modify_users_file.assert_not_called()
+
+    @patch("crud.CRUD.modify_users_file")
+    @patch("crud.CRUD.read_users_file")
+    def test_update_users_with_correct_Trust_value_Passes_correct_value_to_modify_users_file(self,
+        mock_read_users_file, mock_modify_users_file):
+
+        mock_read_users_file.return_value = self.users_data
+        crud = CRUD()
+        crud.update_users(1, "Trust", 10) # Trust doit être entre 0 et 100
+        mock_modify_users_file.assert_called_once_with({'1': {'name': 'alex@gmail.com', 'Trust': 10, 'SpamN': 0, 'HamN': 20, 'Date_of_first_seen_message': 1596844800.0, 'Date_of_last_seen_message': 1596844800.0, 'Groups': ['default', 'friends']}, '2': {'name': 'mark@mail.com', 'Trust': 65.45454, 'SpamN': 171, 'HamN': 324, 'Date_of_first_seen_message': 1596844800.0, 'Date_of_last_seen_message': 1596844800.0, 'Groups': ['default']}})
+
+    @patch("crud.CRUD.modify_groups_file")
+    @patch("crud.CRUD.read_users_file")
+    def test_add_new_group_with_not_existing_member_Returns_False(self,
+        mock_read_users_file, mock_modify_groups_file):
+
+        mock_read_users_file.return_value = self.users_data
+        crud = CRUD()
+        self.assertFalse(crud.add_new_group('new_group', '50', ['not_existing_user@example.com']))
+        mock_modify_groups_file.assert_not_called()
