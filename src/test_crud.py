@@ -208,10 +208,11 @@ class TestCRUD(unittest.TestCase):
         crud = CRUD()
         self.assertFalse(crud.get_user_id("not_existing_name@example.com"))
 
-
     @patch("crud.CRUD.read_users_file")
     def test_get_user_id_Returns_id_for_valid_user_name(self, mock_read_users_file):
-        pass
+        mock_read_users_file.return_value = self.users_data
+        crud = CRUD()
+        self.assertEqual(crud.get_user_id("alex@gmail.com"), '1')
 
     @patch("crud.CRUD.read_groups_file")
     def test_get_group_id_Returns_false_for_invalid_group_name(
