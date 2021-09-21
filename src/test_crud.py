@@ -278,7 +278,7 @@ class TestCRUD(unittest.TestCase):
         # on vérifie l'appel à la fonction modify_users_file
         updated_data = {
             "1": {
-                "name": "fake_name@test.com", # nouveau name
+                "name": "fake_name@test.com",  # nouveau name
                 "Trust": 100,
                 "SpamN": 0,
                 "HamN": 20,
@@ -342,7 +342,7 @@ class TestCRUD(unittest.TestCase):
 
         mock_read_groups_file.return_value = self.groups_data
         crud = CRUD()
-        crud.update_groups(2, 'name', 'old_friends') # on modifie pas le groupe default qui est particulier
+        crud.update_groups(2, 'name', 'old_friends')  # on modifie pas le groupe default qui est particulier
 
         # On peut vérifier que la méthode modify_groups_file est bien appelé
         new_groups = {
@@ -352,7 +352,7 @@ class TestCRUD(unittest.TestCase):
                 "List_of_members": ["alex@gmail.com", "mark@mail.com"],
             },
             "2": {
-                "name": "old_friends", # new value
+                "name": "old_friends",  # new value
                 "Trust": 90,
                 "List_of_members": ["alex@gmail.com"],
             },
@@ -421,11 +421,10 @@ class TestCRUD(unittest.TestCase):
         self.assertFalse(crud.remove_user_group(1, 'not_existing_group'))
 
         # et un groupe qui ne contient pas l'utilisateur
-        self.assertFalse(crud.remove_user_group(2, 'friends')) # 2 n'est pas dans le groupe friends
+        self.assertFalse(crud.remove_user_group(2, 'friends'))  # 2 n'est pas dans le groupe friends
 
         # On peut vérifier que la méthode modify_users_file ne sont pas appelées
         mock_modify_users_file.assert_not_called()
-
 
     @patch("crud.CRUD.modify_users_file")
     @patch("crud.CRUD.read_users_file")
@@ -438,7 +437,12 @@ class TestCRUD(unittest.TestCase):
         # on vérifie avec un groupe qui n'existe pas
         crud.remove_user_group(1, 'friends')
 
-        new_users_data = {'1': {'name': 'alex@gmail.com', 'Trust': 100, 'SpamN': 0, 'HamN': 20, 'Date_of_first_seen_message': 1596844800.0, 'Date_of_last_seen_message': 1596844800.0, 'Groups': ['default']}, '2': {'name': 'mark@mail.com', 'Trust': 65.45454, 'SpamN': 171, 'HamN': 324, 'Date_of_first_seen_message': 1596844800.0, 'Date_of_last_seen_message': 1596844800.0, 'Groups': ['default']}}
+        new_users_data = {'1': {'name': 'alex@gmail.com', 'Trust': 100, 'SpamN': 0, 'HamN': 20,
+                                'Date_of_first_seen_message': 1596844800.0, 'Date_of_last_seen_message': 1596844800.0,
+                                'Groups': ['default']},
+                          '2': {'name': 'mark@mail.com', 'Trust': 65.45454, 'SpamN': 171, 'HamN': 324,
+                                'Date_of_first_seen_message': 1596844800.0, 'Date_of_last_seen_message': 1596844800.0,
+                                'Groups': ['default']}}
         mock_modify_users_file.assert_called_once_with(new_users_data)
 
     @patch("crud.CRUD.modify_groups_file")
@@ -446,14 +450,25 @@ class TestCRUD(unittest.TestCase):
     def test_remove_group_Returns_false_for_invalid_id(
             self, mock_read_groups_file, mock_modify_groups_file
     ):
-        pass
+
+        mock_read_groups_file.return_value = self.groups_data
+        crud = CRUD()
+        self.assertFalse(crud.remove_group(10))
+
+        # On peut vérifier que la méthode modify_users_file ne sont pas appelées
+        mock_modify_groups_file.assert_not_called()
 
     @patch("crud.CRUD.modify_groups_file")
     @patch("crud.CRUD.read_groups_file")
     def test_remove_group_Passes_correct_value_to_modify_groups_file(
             self, mock_read_groups_file, mock_modify_groups_file
     ):
-        pass
+        mock_read_groups_file.return_value = self.groups_data
+        crud = CRUD()
+        crud.remove_group(2)  # on remove le groupe friends
+
+        mock_modify_groups_file.assert_called_once_with(
+            {'1': {'name': 'default', 'Trust': 50, 'List_of_members': ['alex@gmail.com', 'mark@mail.com']}})
 
     @patch("crud.CRUD.modify_groups_file")
     @patch("crud.CRUD.read_groups_file")
