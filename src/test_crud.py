@@ -71,7 +71,6 @@ class TestCRUD(unittest.TestCase):
         # On ajoute l'utilisateur
         crud.add_new_user("test@example.com", "1998-04-18")
 
-
         # Transformation de la date pour obtenir le timestamp
         dt = datetime.strptime("1998-04-18", '%Y-%m-%d')
         date = dt.replace(tzinfo=timezone.utc).timestamp()
@@ -90,11 +89,13 @@ class TestCRUD(unittest.TestCase):
         mock_modify_users_file.assert_called_once_with({**self.users_data, **current_data})
 
         # est ce que l'adresse email a bien été ajoutée au groupe par défault pour la modification ?
-        mock_modify_groups_file.assert_called_once_with({'1': {'name': 'default', 'Trust': 50, 'List_of_members': ['alex@gmail.com', 'mark@mail.com', 'test@example.com']}, '2': {'name': 'friends', 'Trust': 90, 'List_of_members': ['alex@gmail.com']}})
+        mock_modify_groups_file.assert_called_once_with({'1': {'name': 'default', 'Trust': 50,
+                                                               'List_of_members': ['alex@gmail.com', 'mark@mail.com',
+                                                                                   'test@example.com']},
+                                                         '2': {'name': 'friends', 'Trust': 90,
+                                                               'List_of_members': ['alex@gmail.com']}})
         # Est ce que le noubvel utilisateur a été ajouté au groupe par défault
         # self.assertIn('test@example.com', crud.groups_data['1']['List_of_members'])
-
-
 
     @patch("crud.CRUD.read_groups_file")
     @patch("crud.CRUD.modify_groups_file")
@@ -130,7 +131,6 @@ class TestCRUD(unittest.TestCase):
         # nos fixtures ne contiennent pas de user avec un id de 10
         self.assertFalse(crud.get_user_data(10, 'name'))
 
-
     @patch("crud.CRUD.read_users_file")
     def test_get_user_data_Returns_false_for_invalid_field(self, mock_read_users_file):
         """Description: il faut utiliser le mock de fonction "read_groups_file",
@@ -143,7 +143,6 @@ class TestCRUD(unittest.TestCase):
         crud = CRUD()
         # nos fixtures contiennent un user avec un id de 10, mais pas le champ renseigné
         self.assertFalse(crud.get_user_data(1, 'not_existing_field_' + str(secrets.token_hex(11))))
-
 
     @patch("crud.CRUD.read_users_file")
     def test_get_user_data_Returns_correct_value_if_field_and_id_are_valid(
@@ -223,10 +222,12 @@ class TestCRUD(unittest.TestCase):
         crud = CRUD()
         self.assertFalse(crud.get_group_id("not_existing_group_name"))
 
-
     @patch("crud.CRUD.read_groups_file")
     def test_get_group_id_Returns_id_for_valid_group_name(self, mock_read_groups_file):
-        pass
+
+        mock_read_groups_file.return_value = self.groups_data
+        crud = CRUD()
+        self.assertEqual("1", crud.get_group_id("default"))
 
     @patch("crud.CRUD.modify_users_file")
     @patch("crud.CRUD.read_users_file")
