@@ -232,13 +232,19 @@ class TestCRUD(unittest.TestCase):
     @patch("crud.CRUD.modify_users_file")
     @patch("crud.CRUD.read_users_file")
     # Modify_user_file mock est inutile pour tester False pour update
+    # On peut vérifier que la méthode n'est pas appelée
     def test_update_users_Returns_false_for_invalid_id(
             self, mock_read_users_file, mock_modify_users_file
     ):
         """Il faut utiliser les mocks pour 'read_users_file' et 'modify_users_file'
         (ou selon votre realisation)
         """
-        pass
+        mock_read_users_file.return_value = self.groups_data
+        crud = CRUD()
+        self.assertFalse(crud.update_users(10, 'name', 'fake_name'))
+
+        # On peut vérifier que la méthode modify_users_file n'est pas appelée
+        mock_modify_users_file.assert_not_called()
 
     @patch("crud.CRUD.modify_users_file")
     @patch("crud.CRUD.read_users_file")
