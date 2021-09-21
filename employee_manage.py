@@ -1,6 +1,6 @@
-
 import unittest
 from unittest.mock import patch
+
 
 #  module "employee_manage.py"
 class Employee:
@@ -17,8 +17,8 @@ class Employee:
             print(msg)
         return True
 
-    def call_database(self, name): # pragma: no cover
+    def call_database(self, name):  # pragma: no cover
         print("Calling database")
 
-    def get_report(self, task): # pragma: no cover
+    def get_report(self, task):  # pragma: no cover
         print("Getting report...")

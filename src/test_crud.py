@@ -314,6 +314,24 @@ class TestCRUD(unittest.TestCase):
         # On peut vérifier que la méthode modify_groups_file n'est pas appelée
         mock_modify_groups_file.assert_not_called()
 
+
+    @patch("crud.CRUD.modify_groups_file")
+    @patch("crud.CRUD.read_groups_file")
+    def test_update_groups_Returns_false_for_invalid_name_format(
+            self, mock_read_groups_file, mock_modify_groups_file
+    ):
+        """Il faut utiliser les mocks pour 'read_groups_file' et 'modify_groups_file'
+        (ou selon votre realisation)
+        """
+
+        mock_read_groups_file.return_value = self.groups_data
+        crud = CRUD()
+        self.assertFalse(crud.update_groups(1, 'name', '')) # too short
+        self.assertFalse(crud.update_groups(1, 'name', '1'*70)) # too long
+
+        # On peut vérifier que la méthode modify_groups_file n'est pas appelée
+        mock_modify_groups_file.assert_not_called()
+
     @patch("crud.CRUD.modify_groups_file")
     @patch("crud.CRUD.read_groups_file")
     def test_update_groups_Returns_false_for_invalid_field(
@@ -330,19 +348,20 @@ class TestCRUD(unittest.TestCase):
         # On peut vérifier que la méthode modify_groups_file n'est pas appelée
         mock_modify_groups_file.assert_not_called()
 
+    @patch("crud.CRUD.read_users_file")
     @patch("crud.CRUD.modify_groups_file")
     @patch("crud.CRUD.read_groups_file")
     def test_update_groups_Passes_correct_data_to_modify_groups_file(
-            self, mock_read_groups_file, mock_modify_groups_file
+            self, mock_read_groups_file, mock_modify_groups_file, mock_read_users_file
     ):
         """Il faut utiliser les mocks pour 'read_groups_file' et 'modify_groups_file'
         (ou selon votre realisation)
         Il faut utiliser ".assert_called_once_with(expected_data)"
         """
-
+        mock_read_users_file.return_value = self.users_data
         mock_read_groups_file.return_value = self.groups_data
         crud = CRUD()
-        crud.update_groups(2, 'name', 'old_friends')  # on modifie pas le groupe default qui est particulier
+        crud.update_groups('2', 'name', 'old_friends')  # on modifie pas le groupe default qui est particulier
 
         # On peut vérifier que la méthode modify_groups_file est bien appelé
         new_groups = {
@@ -586,6 +605,31 @@ class TestCRUD(unittest.TestCase):
 
     @patch("crud.CRUD.modify_users_file")
     @patch("crud.CRUD.read_users_file")
+    def test_update_users_with_valid_Date_of_first_seen_message_Passes_correct_value_to_modify_users_file(self,
+        mock_read_users_file, mock_modify_users_file):
+
+        mock_read_users_file.return_value = self.users_data
+        crud = CRUD()
+        new_date = "1200-06-06"
+        self.assertTrue(crud.update_users(1, "Date_of_first_seen_message", new_date))
+        timestamp = crud.convert_to_unix(new_date)
+        mock_modify_users_file.assert_called_once_with({'1': {'name': 'alex@gmail.com', 'Trust': 100, 'SpamN': 0, 'HamN': 20, 'Date_of_first_seen_message': timestamp, 'Date_of_last_seen_message': 1596844800.0, 'Groups': ['default', 'friends']}, '2': {'name': 'mark@mail.com', 'Trust': 65.45454, 'SpamN': 171, 'HamN': 324, 'Date_of_first_seen_message': 1596844800.0, 'Date_of_last_seen_message': 1596844800.0, 'Groups': ['default']}})
+
+    @patch("crud.CRUD.modify_users_file")
+    @patch("crud.CRUD.read_users_file")
+    def test_update_users_with_valid_Date_of_last_seen_message_Passes_correct_value_to_modify_users_file(self,
+        mock_read_users_file, mock_modify_users_file):
+
+        mock_read_users_file.return_value = self.users_data
+        crud = CRUD()
+        new_date = "2200-06-06"
+        self.assertTrue(crud.update_users(1, "Date_of_last_seen_message", new_date))
+        timestamp = crud.convert_to_unix(new_date)
+        mock_modify_users_file.assert_called_once_with({'1': {'name': 'alex@gmail.com', 'Trust': 100, 'SpamN': 0, 'HamN': 20, 'Date_of_first_seen_message': 1596844800.0, 'Date_of_last_seen_message': timestamp, 'Groups': ['default', 'friends']}, '2': {'name': 'mark@mail.com', 'Trust': 65.45454, 'SpamN': 171, 'HamN': 324, 'Date_of_first_seen_message': 1596844800.0, 'Date_of_last_seen_message': 1596844800.0, 'Groups': ['default']}})
+
+
+    @patch("crud.CRUD.modify_users_file")
+    @patch("crud.CRUD.read_users_file")
     def test_update_users_with_invalid_Trust_value_Returns_False(self,
         mock_read_users_file, mock_modify_users_file):
 
@@ -605,12 +649,196 @@ class TestCRUD(unittest.TestCase):
         crud.update_users(1, "Trust", 10) # Trust doit être entre 0 et 100
         mock_modify_users_file.assert_called_once_with({'1': {'name': 'alex@gmail.com', 'Trust': 10, 'SpamN': 0, 'HamN': 20, 'Date_of_first_seen_message': 1596844800.0, 'Date_of_last_seen_message': 1596844800.0, 'Groups': ['default', 'friends']}, '2': {'name': 'mark@mail.com', 'Trust': 65.45454, 'SpamN': 171, 'HamN': 324, 'Date_of_first_seen_message': 1596844800.0, 'Date_of_last_seen_message': 1596844800.0, 'Groups': ['default']}})
 
-    @patch("crud.CRUD.modify_groups_file")
+
+    @patch("crud.CRUD.modify_users_file")
+    @patch("crud.CRUD.read_users_file")
+    def test_update_users_with_invalid_SpamN_and_HamN_values_Returns_False(self,
+            mock_read_users_file, mock_modify_users_file):
+
+        mock_read_users_file.return_value = self.users_data
+        crud = CRUD()
+        self.assertFalse(crud.update_users(1, "SpamN", -1)) # Trust doit être entre 0 et 100
+        self.assertFalse(crud.update_users(1, "HamN", -1)) # Trust doit être entre 0 et 100
+        mock_modify_users_file.assert_not_called()
+
+
+    @patch("crud.CRUD.modify_users_file")
+    @patch("crud.CRUD.read_users_file")
+    def test_update_users_with_correct_SpamN_and_HamN_values_Passes_correct_value_to_modify_users_file(self,
+            mock_read_users_file, mock_modify_users_file):
+
+        mock_read_users_file.return_value = self.users_data
+        crud = CRUD()
+        new_value = 1000
+        self.assertTrue(crud.update_users(1, "SpamN", new_value))  # Trust doit être entre 0 et 100
+        mock_modify_users_file.assert_called_once_with({'1': {'name': 'alex@gmail.com', 'Trust': 100, 'SpamN': new_value, 'HamN': 20, 'Date_of_first_seen_message': 1596844800.0, 'Date_of_last_seen_message': 1596844800.0, 'Groups': ['default', 'friends']}, '2': {'name': 'mark@mail.com', 'Trust': 65.45454, 'SpamN': 171, 'HamN': 324, 'Date_of_first_seen_message': 1596844800.0, 'Date_of_last_seen_message': 1596844800.0, 'Groups': ['default']}})
+
+        self.assertTrue(crud.update_users(1, "HamN", new_value))  # Trust doit être entre 0 et 100
+        mock_modify_users_file.assert_called_with({'1': {'name': 'alex@gmail.com', 'Trust': 100, 'SpamN': new_value, 'HamN': new_value, 'Date_of_first_seen_message': 1596844800.0, 'Date_of_last_seen_message': 1596844800.0, 'Groups': ['default', 'friends']}, '2': {'name': 'mark@mail.com', 'Trust': 65.45454, 'SpamN': 171, 'HamN': 324, 'Date_of_first_seen_message': 1596844800.0, 'Date_of_last_seen_message': 1596844800.0, 'Groups': ['default']}})
+
     @patch("crud.CRUD.read_users_file")
     def test_add_new_group_with_not_existing_member_Returns_False(self,
-        mock_read_users_file, mock_modify_groups_file):
+        mock_read_users_file):
 
         mock_read_users_file.return_value = self.users_data
         crud = CRUD()
         self.assertFalse(crud.add_new_group('new_group', '50', ['not_existing_user@example.com']))
+
+
+    @patch("crud.CRUD.modify_users_file")
+    @patch("crud.CRUD.read_users_file")
+    def test_get_new_user_id_incrementation(self,
+        mock_read_users_file, mock_modify_users_file):
+
+        mock_read_users_file.return_value = self.users_data
+        crud = CRUD()
+
+        # On ajoute 2 nouveaux utilisateurs
+        crud.add_new_user("John1@doe.fr", "2021-09-10") # est sensé avoir l'id 0
+        crud.add_new_user("John2@doe.fr", "2021-09-10")  # est sensé avoir un id 3, car il y a déjà 2 utilisateurs dans nos fixtures
+
+        self.assertEqual(crud.get_user_id('John1@doe.fr'), "0")
+        self.assertEqual(crud.get_user_id('John2@doe.fr'), "3")
+
+    @patch("crud.CRUD.modify_groups_file")
+    @patch("crud.CRUD.read_groups_file")
+    def test_get_new_group_id_incrementation(
+            self, mock_read_groups_file, mock_modify_groups_file
+    ):
+
+        mock_read_groups_file.return_value = self.groups_data
+        crud = CRUD()
+
+        # On ajoute 2 nouveaux groupes
+        crud.add_new_group("group_with_id_0", 10, [])  # est sensé avoir l'id 0
+        crud.add_new_group("group_with_id_3", 10, [])  # est sensé avoir un id 3, car il y a déjà 2 utilisateurs dans nos fixtures
+
+        self.assertEqual(crud.get_group_id('group_with_id_0'), "0")
+        self.assertEqual(crud.get_group_id('group_with_id_3'), "3")
+
+    @patch("crud.CRUD.modify_groups_file")
+    @patch("crud.CRUD.read_groups_file")
+    def test_update_groups_Returns_false_for_invalid_Trust_value(
+            self, mock_read_groups_file, mock_modify_groups_file
+    ):
+        """Il faut utiliser les mocks pour 'read_groups_file' et 'modify_groups_file'
+        (ou selon votre realisation)
+        """
+
+        mock_read_groups_file.return_value = self.groups_data
+        crud = CRUD()
+        self.assertFalse(crud.update_groups(1, 'Trust', -1))
+        self.assertFalse(crud.update_groups(1, 'Trust', 101))
+
+        # On peut vérifier que la méthode modify_groups_file n'est pas appelée
         mock_modify_groups_file.assert_not_called()
+
+    @patch("crud.CRUD.modify_groups_file")
+    @patch("crud.CRUD.read_groups_file")
+    def test_update_groups_with_correct_Trust_value_Passes_correct_value_to_modify_groups_file(
+            self, mock_read_groups_file, mock_modify_groups_file
+    ):
+        """Il faut utiliser les mocks pour 'read_groups_file' et 'modify_groups_file'
+        (ou selon votre realisation)
+        """
+
+        mock_read_groups_file.return_value = self.groups_data
+        crud = CRUD()
+        trust_value = 50
+        self.assertTrue(crud.update_groups(1, 'Trust', trust_value))
+
+        # On peut vérifier que la méthode modify_groups_file est appelé avec la nouvelle valeure de trust
+        mock_modify_groups_file.assert_called_once_with({'1': {'name': 'default', 'Trust': trust_value, 'List_of_members': ['alex@gmail.com', 'mark@mail.com']}, '2': {'name': 'friends', 'Trust': 90, 'List_of_members': ['alex@gmail.com']}})
+
+
+
+    @patch("crud.CRUD.modify_groups_file")
+    @patch("crud.CRUD.read_groups_file")
+    def test_update_groups_Returns_false_for_invalid_List_of_members(
+            self, mock_read_groups_file, mock_modify_groups_file
+    ):
+        """Il faut utiliser les mocks pour 'read_groups_file' et 'modify_groups_file'
+        (ou selon votre realisation)
+        """
+
+        mock_read_groups_file.return_value = self.groups_data
+        crud = CRUD()
+        self.assertFalse(crud.update_groups(1, 'List_of_members', ['not_existing_user@example.com']))
+
+        # On peut vérifier que la méthode modify_groups_file n'est pas appelée
+        mock_modify_groups_file.assert_not_called()
+
+    @patch("crud.CRUD.modify_groups_file")
+    @patch("crud.CRUD.read_groups_file")
+    def test_update_groups_Returns_false_for_invalid_field(
+            self, mock_read_groups_file, mock_modify_groups_file
+    ):
+        """Il faut utiliser les mocks pour 'read_groups_file' et 'modify_groups_file'
+        (ou selon votre realisation)
+        """
+
+        mock_read_groups_file.return_value = self.groups_data
+        crud = CRUD()
+        self.assertFalse(crud.update_groups(1, 'not_existing_field', None))
+
+        # On peut vérifier que la méthode modify_groups_file n'est pas appelée
+        mock_modify_groups_file.assert_not_called()
+
+    @patch("crud.CRUD.modify_groups_file")
+    @patch("crud.CRUD.read_groups_file")
+    def test_update_groups_Returns_false_for_invalid_field(
+            self, mock_read_groups_file, mock_modify_groups_file
+    ):
+        """Il faut utiliser les mocks pour 'read_groups_file' et 'modify_groups_file'
+        (ou selon votre realisation)
+        """
+
+        mock_read_groups_file.return_value = self.groups_data
+        crud = CRUD()
+        self.assertFalse(crud.update_groups(1, 'not_existing_field', None))
+
+        # On peut vérifier que la méthode modify_groups_file n'est pas appelée
+        mock_modify_groups_file.assert_not_called()
+
+    @patch("crud.CRUD.modify_users_file")
+    @patch("crud.CRUD.read_users_file")
+    def test_update_users_Returns_false_with_invalid_Groups(self,
+            mock_read_users_file, mock_modify_users_file):
+
+        mock_read_users_file.return_value = self.users_data
+        crud = CRUD()
+        self.assertFalse(crud.update_users(1, "Groups", ['not_existing_group']))  # Trust doit être entre 0 et 100
+        mock_modify_users_file.assert_not_called()
+        
+
+    @patch("crud.CRUD.read_groups_file")
+    @patch("crud.CRUD.modify_users_file")
+    @patch("crud.CRUD.read_users_file")
+    def test_update_users_with_correct_Groups_value_Passes_correct_value_to_modify_users_file(self,
+            mock_read_users_file, mock_modify_users_file, mock_read_groups_file):
+        mock_read_groups_file.return_value = self.groups_data
+        mock_read_users_file.return_value = self.users_data
+        crud = CRUD()
+        self.assertTrue(crud.update_users(2, "Groups", ['friends']))
+        mock_modify_users_file.assert_called_once_with({'1': {'name': 'alex@gmail.com', 'Trust': 100, 'SpamN': 0, 'HamN': 20, 'Date_of_first_seen_message': 1596844800.0, 'Date_of_last_seen_message': 1596844800.0, 'Groups': ['default', 'friends']}, '2': {'name': 'mark@mail.com', 'Trust': 65.45454, 'SpamN': 171, 'HamN': 324, 'Date_of_first_seen_message': 1596844800.0, 'Date_of_last_seen_message': 1596844800.0, 'Groups': ['friends']}})
+
+    @patch("crud.CRUD.read_groups_file")
+    @patch("crud.CRUD.modify_users_file")
+    @patch("crud.CRUD.read_users_file")
+    def test_add_new_group_with_members_modify_members_groups(self,
+            mock_read_users_file, mock_modify_users_file, mock_read_groups_file):
+        """
+        Les members groups sont changés dans l'instance mùais ne sont pas persisté dans les fichiers. Ainsi,
+        modify_users_file n'est pas appelé, alors que les utilisateurs ont changés..
+        """
+
+        mock_read_groups_file.return_value = self.groups_data
+        mock_read_users_file.return_value = self.users_data
+        crud = CRUD()
+        new_group = "new_group_for_testing"
+
+        # on crée le nouvreau groupe
+        self.assertTrue(crud.add_new_group(new_group, 20, ['alex@gmail.com']))
+
+        # on vérifie qu'il soit bien ajouté pour l'utilisateur alex@gmail.com
+        self.assertIn(new_group, crud.users_data['1']["Groups"])

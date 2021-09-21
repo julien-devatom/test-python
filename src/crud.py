@@ -2,6 +2,7 @@ import json
 import re
 from datetime import timezone, datetime
 
+
 class CRUD:
     """
     Classe pour realiser la fonctionalite CRUD.
@@ -9,7 +10,7 @@ class CRUD:
 
     def __init__(self):
         # Init the lookup tables
-        self.users_lookup  = {}
+        self.users_lookup = {}
         self.groups_lookup = {}
 
         # Set the files' name
@@ -23,7 +24,7 @@ class CRUD:
         except:
             # We could not load the data
             self.users_data = {}
-            self.groups_data = {}            
+            self.groups_data = {}
             pass
         # Fill the lookup tables, the name are the tables' keys
         for key in self.users_data:
@@ -40,30 +41,33 @@ class CRUD:
     Description: retourne un id unique pour un nouvel utilisateur
     Sortie: un id unique pour un nouvel utilisateur
     '''
+
     def get_new_user_id(self):
         new_id = 0
         while str(new_id) in self.users_data:
             new_id += 1
-        
+
         return str(new_id)
 
     '''
     Description: retourne un id unique pour un nouveau groupe
     Sortie: un id unique pour un nouveau groupe
     '''
+
     def get_new_group_id(self):
         new_id = 0
         while str(new_id) in self.groups_data:
             new_id += 1
-        
+
         return str(new_id)
-    
+
     """
     Description: Fonction pour convertir la date en unix-timestamp
     Sortie: float, la date en format unix-timestamp
     """
-    def convert_to_unix(self, date):    
-        dt   = datetime.strptime(date, '%Y-%m-%d')
+
+    def convert_to_unix(self, date):
+        dt = datetime.strptime(date, '%Y-%m-%d')
         date = dt.replace(tzinfo=timezone.utc).timestamp()
         return date
 
@@ -86,7 +90,7 @@ class CRUD:
             return False
 
         # Init last and first message date, as the date of creation
-        dt   = datetime.strptime(date, '%Y-%m-%d')
+        dt = datetime.strptime(date, '%Y-%m-%d')
         date = dt.replace(tzinfo=timezone.utc).timestamp()
 
         # Create the new user
@@ -101,7 +105,7 @@ class CRUD:
             "Groups": ["default"]
         }
         self.users_lookup[user_email] = new_id
-        default_id   = self.get_group_id("default")
+        default_id = self.get_group_id("default")
         default_list = self.get_groups_data(default_id, "List_of_members")
         default_list.append(user_email)
         self.update_groups(default_id, "List_of_members", default_list)
@@ -124,9 +128,9 @@ class CRUD:
         # Check if all users exist
         for user in members_list:
             if user not in self.users_lookup:
-                return False 
+                return False
 
-        # Create the new group
+                # Create the new group
         new_id = self.get_new_group_id()
         self.groups_data[new_id] = {
             "name": name,
@@ -142,14 +146,14 @@ class CRUD:
                 if name not in self.users_data[user_id]["Groups"]:
                     self.users_data[user_id]["Groups"].append(name)
 
-        except RuntimeError:
+        except RuntimeError:  # pragma: no cover
             return False
-        #print(self.groups_data)
+        # print(self.groups_data)
         # Success
         return self.modify_groups_file(self.groups_data)
 
     ###***********READ****************
-    def read_users_file(self):
+    def read_users_file(self):  # pragma: no cover mocked
         '''
         Description: fonction qui lit le fichier 'users.json'
         et retourne le dictionaire
@@ -158,7 +162,7 @@ class CRUD:
         with open(self.users_file) as users_file:
             return json.load(users_file)
 
-    def read_groups_file(self):
+    def read_groups_file(self):  # pragma: no cover mocked
         '''
         Description: fonction qui lit le fichier 'users.json'
         et retourne le dictionaire
@@ -187,7 +191,6 @@ class CRUD:
             return False
 
         return user[field]
-        
 
     def get_groups_data(self, group_id, field):
         '''
@@ -231,7 +234,7 @@ class CRUD:
 
     ##*******UPDATE******************
 
-    def modify_users_file(self, data):
+    def modify_users_file(self, data):  # pragma: no cover
         '''
         Description: fonction qui ecrit le dictionnaire
         d'utilisateurs dans le fichiers 'users.json'
@@ -241,7 +244,7 @@ class CRUD:
             json.dump(data, outfile)
         return True
 
-    def modify_groups_file(self, data):
+    def modify_groups_file(self, data):  # pragma: no cover
         '''
         Description: fonction qui ecrit le dictionnaire
         des grouppes dans le fichiers 'groups.json'
@@ -274,7 +277,7 @@ class CRUD:
             if field == "name":
                 if not re.fullmatch(r"[^@]+@[^@]+\.[^@]+", data):
                     return False
-                
+
                 # Update the data and the lookup table
                 user_name = self.get_user_data(user_id, "name")
                 del self.users_lookup[user_name]
@@ -289,7 +292,7 @@ class CRUD:
                     return False
 
                 self.users_data[user_id]["Date_of_last_seen_message"] = date
-                    
+
             elif field == "Date_of_first_seen_message":
                 date = self.convert_to_unix(data)
                 first_msg = self.get_user_data(user_id, "Date_of_first_seen_message")
@@ -298,16 +301,16 @@ class CRUD:
                     return False
 
                 self.users_data[user_id]["Date_of_first_seen_message"] = date
-                    
+
             elif field == "Trust":
                 if data < 0 or data > 100:
                     return False
-                
+
                 self.users_data[user_id]["Trust"] = data
 
             elif field == "SpamN" or field == "HamN":
                 if data < 0:
-                    return False 
+                    return False
 
                 self.users_data[user_id][field] = data
 
@@ -318,18 +321,17 @@ class CRUD:
                         return False
 
                 # Update user's groups
-                self.users_data[user_id]["Groups"] = data                  
-            
-            else:
+                self.users_data[user_id]["Groups"] = data
+
+            else:  # pragma: no cover
                 # This case should have been caught earlier and we should never 
                 # execute this line (field not in self.users_data[user_id])
-                return False 
+                return False
 
-        except RuntimeError:
+        except RuntimeError:  # pragma: no cover
             return False
-        
-        return self.modify_users_file(self.users_data)
 
+        return self.modify_users_file(self.users_data)
 
     def update_groups(self, group_id, field, data):
         '''
@@ -355,24 +357,24 @@ class CRUD:
             # Update data
             if field == "name":
                 if len(data) < 1 or len(data) > 64:
-                    return False 
+                    return False
 
                 old_name = self.groups_data[group_id]["name"]
                 # Update user's groups
-                for user in self.users_data:
+                for user in self.users_data.values():
                     if old_name in user["Groups"]:
                         user["Groups"].remove(old_name)
-                        user["Groups"].append(data)                   
+                        user["Groups"].append(data)
 
-                # Update group name
+                        # Update group name
                 del self.groups_lookup[self.groups_data[group_id]["name"]]
                 self.groups_data[group_id]["name"] = data
-                self.groups_lookup[data] = group_id            
+                self.groups_lookup[data] = group_id
 
             elif field == "Trust":
                 if data < 0 or data > 100:
                     return False
-                
+
                 self.groups_data[group_id]["Trust"] = data
 
             elif field == "List_of_members":
@@ -380,15 +382,15 @@ class CRUD:
                 for email in data:
                     if email not in self.users_lookup:
                         return False
-                    
+
                 self.groups_data[group_id]["List_of_members"] = data
 
-            else:
+            else:  # pragma: no cover
                 # This case should have been caught earlier and we should never 
                 # execute this line (field not in self.groups_data[group_id])
-                return False 
+                return False
 
-        except RuntimeError:
+        except RuntimeError:  # pragma: no cover
             return False
 
         return self.modify_groups_file(self.groups_data)
@@ -404,16 +406,16 @@ class CRUD:
 
         # Check existence       
         if user_id not in self.users_data:
-            return False 
-        
+            return False
+
         try:
-            user_name  = self.get_user_data(user_id, "name")
-            
+            user_name = self.get_user_data(user_id, "name")
+
             # Remove user 
             del self.users_data[user_id]
             del self.users_lookup[user_name]
 
-        except RuntimeError:
+        except RuntimeError:  # pragma: no cover
             return False
 
         return self.modify_users_file(self.users_data)
@@ -424,12 +426,12 @@ class CRUD:
         auquel appartient un utilisateur.
         Sortie: bool, 'True' pour succes, 'False' dans le cas de failure.
         '''
-        user_id  = str(user_id)
+        user_id = str(user_id)
 
         # Check existence       
         if user_id not in self.users_data:
-            return False 
-        
+            return False
+
         try:
             # Get names 
             user_name = self.get_user_data(user_id, "name")
@@ -442,7 +444,7 @@ class CRUD:
             # Remove group
             self.users_data[user_id]["Groups"].remove(group_name)
 
-        except RuntimeError:
+        except RuntimeError:  # pragma: no cover
             return False
 
         return self.modify_users_file(self.users_data)
@@ -456,7 +458,7 @@ class CRUD:
 
         # Check existence       
         if group_id not in self.groups_data:
-            return False 
+            return False
 
         try:
             # Get names 
@@ -466,9 +468,9 @@ class CRUD:
             del self.groups_data[group_id]
             del self.groups_lookup[group_name]
 
-        except RuntimeError:
+        except RuntimeError:  # pragma: no cover
             return False
-        
+
         return self.modify_groups_file(self.groups_data)
 
     def remove_group_member(self, group_id, member):
@@ -481,7 +483,7 @@ class CRUD:
 
         # Check existence       
         if group_id not in self.groups_data:
-            return False 
+            return False
 
         if member not in self.groups_data[group_id]["List_of_members"]:
             return False
