@@ -258,7 +258,6 @@ class TestCRUD(unittest.TestCase):
         mock_read_users_file.return_value = self.users_data
         crud = CRUD()
         self.assertFalse(crud.update_users(1, 'not_existing_field_' + str(secrets.token_hex(11)), 'fake_name@test.com'))
-        print(crud.users_data)
         # On peut vérifier que la méthode modify_users_file n'est pas appelée
         mock_modify_users_file.assert_not_called()
 
@@ -271,7 +270,33 @@ class TestCRUD(unittest.TestCase):
         (ou selon votre realisation)
         Il faut utiliser ".assert_called_once_with(expected_data)"
         """
-        pass
+
+        mock_read_users_file.return_value = self.users_data
+        crud = CRUD()
+        crud.update_users(1, 'name', 'fake_name@test.com')
+
+        # on vérifie l'appel à la fonction modify_users_file
+        updated_data = {
+            "1": {
+                "name": "fake_name@test.com", # nouveau name
+                "Trust": 100,
+                "SpamN": 0,
+                "HamN": 20,
+                "Date_of_first_seen_message": 1596844800.0,
+                "Date_of_last_seen_message": 1596844800.0,
+                "Groups": ["default"],
+            },
+            "2": {
+                "name": "mark@mail.com",
+                "Trust": 65.45454,
+                "SpamN": 171,
+                "HamN": 324,
+                "Date_of_first_seen_message": 1596844800.0,
+                "Date_of_last_seen_message": 1596844800.0,
+                "Groups": ["default"],
+            }
+        }
+        mock_modify_users_file.assert_called_once_with(updated_data)
 
     @patch("crud.CRUD.modify_groups_file")
     @patch("crud.CRUD.read_groups_file")
