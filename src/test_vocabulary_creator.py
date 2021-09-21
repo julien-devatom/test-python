@@ -30,6 +30,7 @@ class TestVocabularyCreator(unittest.TestCase):
          d'écrire au fichier "vocabulary.json".
          if faut utiliser self.assertEqual(appele_a_create_vocab(), self.vocab_expected)
         """
+
         pass
     
     ###########################################
