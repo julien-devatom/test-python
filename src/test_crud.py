@@ -191,13 +191,22 @@ class TestCRUD(unittest.TestCase):
         """
         Similare test_get_user_data_Returns_correct_value_if_field_and_id_are_valid
         """
-        pass
+
+        mock_read_groups_file.return_value = self.groups_data
+        crud = CRUD()
+
+        # On vérifie que ca marche pour chaque champ !
+        for field, value in self.groups_data['1'].items():
+            self.assertEqual(crud.get_groups_data(1, field), value)
 
     @patch("crud.CRUD.read_users_file")
     def test_get_user_id_Returns_false_for_invalid_user_name(
             self, mock_read_users_file
     ):
-        pass
+
+        mock_read_users_file.return_value = self.users_data
+        crud = CRUD()
+
 
     @patch("crud.CRUD.read_users_file")
     def test_get_user_id_Returns_id_for_valid_user_name(self, mock_read_users_file):
