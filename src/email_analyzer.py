@@ -30,7 +30,6 @@ class EmailAnalyzer:
         # Compute the merged probabilities
         p_spam = 0.5 * (p_subject_spam + p_body_spam)
         p_ham  = 0.5 * (p_subject_ham  + p_body_ham)      
-
         # Decide is the email is spam or ham
         if p_spam > p_ham:
             return True 
@@ -48,10 +47,8 @@ class EmailAnalyzer:
         p_ham  = 1.0
 
         voc_data = self.load_dict()
-
-
         # Walk the text to compute the probability
-        for word in body:
+        for word in body.split(" "):
             # Check the spam probability
             if word in voc_data["p_body_spam"]:
                 p_spam *= voc_data["p_body_spam"][word]
@@ -66,7 +63,6 @@ class EmailAnalyzer:
 
         p_spam *= 0.5925
         p_ham  *= 0.4075
-        
         return (p_spam, p_ham)
 
     def spam_ham_subject_prob(self, subject):
@@ -82,7 +78,7 @@ class EmailAnalyzer:
         voc_data = self.load_dict()
 
         # Walk the text to compute the probability
-        for word in subject:
+        for word in subject.split(" "):
             # Check the spam probability
             if word in voc_data["p_sub_spam"]:
                 p_spam *= voc_data["p_sub_spam"][word]
