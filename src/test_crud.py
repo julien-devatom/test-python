@@ -502,7 +502,13 @@ class TestCRUD(unittest.TestCase):
     def test_remove_group_member_Passes_correct_value_to_modify_groups_file(
             self, mock_read_groups_file, mock_modify_groups_file
     ):
-        pass
+        mock_read_groups_file.return_value = self.groups_data
+        crud = CRUD()
+        crud.remove_group_member(2, 'alex@gmail.com')
+
+        # On peut vérifier que la méthode mock_modify_groups_file n'est pas appelée
+        mock_modify_groups_file.assert_called_once_with({'1': {'name': 'default', 'Trust': 50, 'List_of_members': ['alex@gmail.com', 'mark@mail.com']}, '2': {'name': 'friends', 'Trust': 90, 'List_of_members': []}})
+
 
     ###########################################
     #               CUSTOM TEST               #
