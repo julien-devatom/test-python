@@ -529,3 +529,7 @@ class TestCRUD(unittest.TestCase):
         self.assertDictEqual(crud.users_data, {}) # aucun utilisateur n'est défini
 
 
+    def test_convert_to_unix_Returns_correct_timestamp(self):
+        crud = CRUD()
+        self.assertEqual(crud.convert_to_unix("2021-09-10"), 1631232000.0)
+
