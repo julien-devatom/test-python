@@ -166,7 +166,10 @@ class TestCRUD(unittest.TestCase):
         """
         Similare test_get_user_data_Returns_false_for_invalid_id
         """
-        pass
+        mock_read_groups_file.return_value = self.groups_data
+        crud = CRUD()
+        # nos fixtures ne contiennent pas de user avec un id de 10
+        self.assertFalse(crud.get_groups_data(10, 'name'))
 
     @patch("crud.CRUD.read_groups_file")
     def test_get_group_data_Returns_false_for_invalid_field(
