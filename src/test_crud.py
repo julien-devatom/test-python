@@ -513,3 +513,19 @@ class TestCRUD(unittest.TestCase):
     ###########################################
     #               CUSTOM TEST               #
     ###########################################
+
+    @patch("crud.CRUD.read_users_file")
+    @patch("crud.CRUD.read_groups_file")
+    def test_open_not_existing_file(self, mock_read_groups_file, mock_read_users_file):
+        mock_read_users_file.side_effect = FileNotFoundError
+        mock_read_groups_file.side_effect = FileNotFoundError
+        crud = CRUD()
+
+        # les méthodes sont appelés
+        mock_read_users_file.assert_called_once() # read user file va générer une erreur
+        mock_read_groups_file.assert_not_called() # et read_groups_file ne sera pas appelé
+
+        self.assertDictEqual(crud.groups_data, {'0': {'List_of_members': [], 'Trust': 50, 'name': 'default'}}) # seul le groupe par défaut est ajouté
+        self.assertDictEqual(crud.users_data, {}) # aucun utilisateur n'est défini
+
+
