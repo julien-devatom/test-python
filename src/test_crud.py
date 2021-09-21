@@ -122,7 +122,12 @@ class TestCRUD(unittest.TestCase):
         est returnee par la fonction si ID non-existant est utilisée
         il faut utiliser ".assertEqual()" ou ".assertFalse()"
         """
-        pass
+
+        mock_read_users_file.return_value = self.users_data
+        crud = CRUD()
+        # nos fixtures ne contiennent pas de user avec un id de 10
+        self.assertFalse(crud.get_user_data(10, 'name'))
+
 
     @patch("crud.CRUD.read_users_file")
     def test_get_user_data_Returns_false_for_invalid_field(self, mock_read_users_file):
