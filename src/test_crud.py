@@ -106,6 +106,14 @@ class TestCRUD(unittest.TestCase):
         il faut utiliser ".assert_called_once_with(expected_data)"
         """
         mock_read_groups_file.return_value = self.groups_data
+        crud = CRUD()
+        # On vérifie si la fonction est bien appelé à l'initialisation
+        mock_read_groups_file.assert_called_once()
+        crud.add_new_group("group_test", 50, [])
+        new_group = {'0': {'name': 'group_test', 'Trust': 50, 'List_of_members': []}}
+
+        # Est ce que le nouveau groupe a bien été ajouté en fin de dictionnaire ?
+        mock_modify_groups_file.assert_called_once_with({**self.groups_data, **new_group})
 
     @patch("crud.CRUD.read_users_file")
     def test_get_user_data_Returns_false_for_invalid_id(self, mock_read_users_file):
