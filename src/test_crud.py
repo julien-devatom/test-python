@@ -206,6 +206,7 @@ class TestCRUD(unittest.TestCase):
 
         mock_read_users_file.return_value = self.users_data
         crud = CRUD()
+        self.assertFalse(crud.get_user_id("not_existing_name@example.com"))
 
 
     @patch("crud.CRUD.read_users_file")
