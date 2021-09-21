@@ -364,14 +364,37 @@ class TestCRUD(unittest.TestCase):
     def test_remove_user_Returns_false_for_invalid_id(
             self, mock_read_users_file, mock_modify_users_file
     ):
-        pass
+
+        mock_read_users_file.return_value = self.users_data
+        crud = CRUD()
+        self.assertFalse(crud.remove_user(10))
+
+        # On peut vérifier que la méthode modify_users_file n'est pas appelée
+        mock_modify_users_file.assert_not_called()
 
     @patch("crud.CRUD.modify_users_file")
     @patch("crud.CRUD.read_users_file")
     def test_remove_user_Passes_correct_value_to_modify_users_file(
             self, mock_read_users_file, mock_modify_users_file
     ):
-        pass
+
+        mock_read_users_file.return_value = self.users_data
+        crud = CRUD()
+        crud.remove_user(1)
+
+        # On peut vérifier que la méthode modify_users_file n'est pas appelée
+        new_users_data = {
+            "2": {
+                "name": "mark@mail.com",
+                "Trust": 65.45454,
+                "SpamN": 171,
+                "HamN": 324,
+                "Date_of_first_seen_message": 1596844800.0,
+                "Date_of_last_seen_message": 1596844800.0,
+                "Groups": ["default"],
+            }
+        }
+        mock_modify_users_file.assert_called_once_with(new_users_data)
 
     @patch("crud.CRUD.modify_users_file")
     @patch("crud.CRUD.read_users_file")
