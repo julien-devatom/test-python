@@ -218,7 +218,11 @@ class TestCRUD(unittest.TestCase):
     def test_get_group_id_Returns_false_for_invalid_group_name(
             self, mock_read_groups_file
     ):
-        pass
+
+        mock_read_groups_file.return_value = self.groups_data
+        crud = CRUD()
+        self.assertFalse(crud.get_group_id("not_existing_group_name"))
+
 
     @patch("crud.CRUD.read_groups_file")
     def test_get_group_id_Returns_id_for_valid_group_name(self, mock_read_groups_file):
