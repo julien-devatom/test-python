@@ -339,7 +339,25 @@ class TestCRUD(unittest.TestCase):
         (ou selon votre realisation)
         Il faut utiliser ".assert_called_once_with(expected_data)"
         """
-        pass
+
+        mock_read_groups_file.return_value = self.groups_data
+        crud = CRUD()
+        crud.update_groups(2, 'name', 'old_friends') # on modifie pas le groupe default qui est particulier
+
+        # On peut vérifier que la méthode modify_groups_file est bien appelé
+        new_groups = {
+            "1": {
+                "name": "default",
+                "Trust": 50,
+                "List_of_members": ["alex@gmail.com", "mark@mail.com"],
+            },
+            "2": {
+                "name": "old_friends", # new value
+                "Trust": 90,
+                "List_of_members": ["alex@gmail.com"],
+            },
+        }
+        mock_modify_groups_file.assert_called_once_with(new_groups)
 
     @patch("crud.CRUD.modify_users_file")
     @patch("crud.CRUD.read_users_file")
