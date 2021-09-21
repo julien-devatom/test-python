@@ -1,3 +1,5 @@
+import secrets
+
 from crud import CRUD
 import unittest
 from unittest.mock import patch
@@ -136,7 +138,12 @@ class TestCRUD(unittest.TestCase):
         est returnee par la fonction si champ non-existant est utilisée
         il faut utiliser ".assertEqual()" ou ".assertFalse()"
         """
-        pass
+
+        mock_read_users_file.return_value = self.users_data
+        crud = CRUD()
+        # nos fixtures contiennent un user avec un id de 10, mais pas le champ renseigné
+        self.assertFalse(crud.get_user_data(1, 'not_existing_field_' + str(secrets.token_hex(11))))
+
 
     @patch("crud.CRUD.read_users_file")
     def test_get_user_data_Returns_correct_value_if_field_and_id_are_valid(
@@ -147,7 +154,12 @@ class TestCRUD(unittest.TestCase):
         si champ est id valide sont utilisee
         il faut utiliser ".assertEqual()""
         """
-        pass
+        mock_read_users_file.return_value = self.users_data
+        crud = CRUD()
+
+        # On vérifie que ca marche pour chaque champ !
+        for field, value in self.users_data['1'].items():
+            self.assertEqual(crud.get_user_data(1, field), value)
 
     @patch("crud.CRUD.read_groups_file")
     def test_get_group_data_Returns_false_for_invalid_id(self, mock_read_groups_file):
