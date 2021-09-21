@@ -311,7 +311,7 @@ class TestCRUD(unittest.TestCase):
         crud = CRUD()
         self.assertFalse(crud.update_groups(10, 'name', 'new_default'))
 
-        # On peut vérifier que la méthode modify_users_file n'est pas appelée
+        # On peut vérifier que la méthode modify_groups_file n'est pas appelée
         mock_modify_groups_file.assert_not_called()
 
     @patch("crud.CRUD.modify_groups_file")
@@ -322,7 +322,13 @@ class TestCRUD(unittest.TestCase):
         """Il faut utiliser les mocks pour 'read_groups_file' et 'modify_groups_file'
         (ou selon votre realisation)
         """
-        pass
+
+        mock_read_groups_file.return_value = self.groups_data
+        crud = CRUD()
+        self.assertFalse(crud.update_groups(1, 'not_existing_field', 'new_default'))
+
+        # On peut vérifier que la méthode modify_groups_file n'est pas appelée
+        mock_modify_groups_file.assert_not_called()
 
     @patch("crud.CRUD.modify_groups_file")
     @patch("crud.CRUD.read_groups_file")
