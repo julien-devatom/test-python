@@ -176,4 +176,38 @@ class RENEGE:
 
     ###########################################
     #             CUSTOM FUNCTION             #
+
+    def get_user_trust(self, user_id):
+        groups = self.crud.get_user_data(user_id,"Groups")
+        sum_trust = 0 #1
+
+        for group in groups:#2
+
+            sum_trust += self.crud.get_group_data(self.crud.get_group_id(group), "Trust")#3
+
+        firstPart = self.crud.convert_to_unix(self.crud.get_user_data(user_id, "Date_of_last_seen_message")) * self.crud.get_user_data(user_id, "HamN")
+        secondPart = self.crud.convert_to_unix(self.crud.get_user_data(user_id, "Date_of_first_seen_message")) * (self.crud.get_user_data(user_id, "HamN") + self.crud.get_user_data(user_id, "SpamN"))
+        trust1 = firstPart / secondPart
+        trust2 = sum_trust / len(groups)#4
+
+        trust = (trust1 + trust2) / 2 #5
+
+        if trust2 < 50: #6
+
+            trust = trust2 #7
+
+        if trust1 > 100: #8
+
+            trust = 100 #9
+
+        if trust > 100: #10
+
+            trust = 100 #11
+
+        if trust < 0: #12
+
+            trust = 0 #13
+        
+        return trust #14
+
     ###########################################
