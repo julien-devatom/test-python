@@ -10,8 +10,8 @@ class TestEmailAnalyzer(unittest.TestCase):
     def setUp(self):
         self.subject = ""
         self.body = ""
-        self.clean_subject = []  # données pour mocker "return_value" du "clean_text"
-        self.clean_body = []  # données pour mocker "return_value" du "clean_text"
+        self.clean_subject = [""]  # données pour mocker "return_value" du "clean_text"
+        self.clean_body = [""]  # données pour mocker "return_value" du "clean_text"
         self.spam_ham_body_prob_true = (
             1,
             0,
@@ -115,25 +115,22 @@ class TestEmailAnalyzer(unittest.TestCase):
         """
         mock_load_dict.return_value = self.vocab
         analyzer = EmailAnalyzer()
-        p_spam, p_ham = analyzer.spam_ham_subject_prob("bad_subject")
+        p_spam, p_ham = analyzer.spam_ham_subject_prob("bad_subject".split(" "))
         self.assertGreater(p_spam, p_ham)  # on vérifir que le sujet est bien qualifié de spam
 
         mock_load_dict.return_value = self.vocab
         analyzer = EmailAnalyzer()
-        p_spam, p_ham = analyzer.spam_ham_subject_prob("bad_subject good_subject")
+        p_spam, p_ham = analyzer.spam_ham_subject_prob("bad_subject good_subject".split(" "))
         self.assertGreater(p_spam, p_ham)  # on vérifir que le spam est toujours un peu plus fort que le ham
 
         mock_load_dict.return_value = self.vocab
         analyzer = EmailAnalyzer()
-        p_spam, p_ham = analyzer.spam_ham_subject_prob("bad_subject really_good_subject")
+        p_spam, p_ham = analyzer.spam_ham_subject_prob("bad_subject really_good_subject".split(" "))
         self.assertGreater(p_ham, p_spam)  # Le bon mot est plus puissant
 
-        p_spam, p_ham = analyzer.spam_ham_subject_prob("good_subject")
+        p_spam, p_ham = analyzer.spam_ham_subject_prob("good_subject".split(" "))
         self.assertGreater(p_ham, p_spam)  # Sujet non spam
 
-        p_spam, p_ham = analyzer.spam_ham_subject_prob("Neutral subject")
+        p_spam, p_ham = analyzer.spam_ham_subject_prob("Neutral subject".split(" "))
         self.assertGreater(p_spam, p_ham )  # Sujet neutre devient spam
 
-    ###########################################
-    #               CUSTOM TEST               #
-    ###########################################

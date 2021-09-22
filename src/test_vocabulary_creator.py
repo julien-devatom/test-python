@@ -30,10 +30,10 @@ class TestVocabularyCreator(unittest.TestCase):
                     }
                 }
             ]}  # données pour mocker "return_value" du "load_dict"
-        self.clean_subject_spam = ["spam", "subject"]  # données pour mocker "return_value" du "clean_text"
-        self.clean_body_spam = ["Not", "a", "good", "body"]  # données pour mocker "return_value" du "clean_text"
-        self.clean_subject_ham = ["good", "subject"]  # données pour mocker "return_value" du "clean_text"
-        self.clean_body_ham = ["really", "good", "mail"]  # données pour mocker "return_value" du "clean_text"
+        self.clean_subject_spam = ["spam", "subject"]  # données pour mocker "return_value" du "clean_text" NOT USED
+        self.clean_body_spam = ["Not", "a", "good", "body"]  # données pour mocker "return_value" du "clean_text" NOT USED
+        self.clean_subject_ham = ["good", "subject"]  # données pour mocker "return_value" du "clean_text" NOT USED
+        self.clean_body_ham = ["really", "good", "mail"]  # données pour mocker "return_value" du "clean_text" NOT USED
         self.vocab_expected = {
             'p_body_ham': {'Wow!': 0.2, 'mail': 0.2, 'nice': 0.2, 'really': 0.4},
             'p_body_spam': {
@@ -72,7 +72,7 @@ class TestVocabularyCreator(unittest.TestCase):
 
         mock_load_dict.return_value = self.mails
         mock_clean_text.side_effect = lambda text: text.split(
-            ' ')  # Dans le cadre de mùes tests, je sais que je peux obtenir la liste des mots de chaque sujet et chaque body simplement en séparant par des espaces
+            ' ')  # Dans le cadre de mes tests, je sais que je peux obtenir la liste des mots de chaque sujet et chaque body simplement en splitant par des espaces
         mock_write_data_to_vocab_file.return_value = True
 
         # On test le fonctionnement
@@ -81,7 +81,3 @@ class TestVocabularyCreator(unittest.TestCase):
 
         # Et on vérifie que le vocabulaire est bien défini
         self.assertEqual(creator.voc_data, self.vocab_expected)
-
-    ###########################################
-    #               CUSTOM TEST               #
-    ###########################################

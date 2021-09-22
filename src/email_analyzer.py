@@ -48,7 +48,7 @@ class EmailAnalyzer:
 
         voc_data = self.load_dict()
         # Walk the text to compute the probability
-        for word in body.split(" "):
+        for word in body:
             # Check the spam probability
             if word in voc_data["p_body_spam"]:
                 p_spam *= voc_data["p_body_spam"][word]
@@ -78,7 +78,7 @@ class EmailAnalyzer:
         voc_data = self.load_dict()
 
         # Walk the text to compute the probability
-        for word in subject.split(" "):
+        for word in subject:
             # Check the spam probability
             if word in voc_data["p_sub_spam"]:
                 p_spam *= voc_data["p_sub_spam"][word]
