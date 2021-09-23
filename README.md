@@ -1,3 +1,6 @@
+# TP 1 
+- Auteurs : Nerese Carlens && Thomas Julien
+- le dépot Github dispo [ici](https://github.com/korrigans84/test-python)
 ## Partie 1
 
 L'objectif de cette partie est de couvrir le code des classes CRUD, EmailAnalyzer et VocabularyCreator.  
