@@ -1,4 +1,6 @@
-# TP 1 
+![](./img/couverture_poly.png)
+
+# LOG3430 TP 1 
 - Auteurs : Nerese Carlens && Thomas Julien
 - le dépot Github dispo [ici](https://github.com/korrigans84/test-python)
 ## Partie 1
