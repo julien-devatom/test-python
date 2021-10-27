@@ -1,0 +1,286 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<System name="ComputeProba">
+  <Parameters>
+    <Parameter id="1" name="log_prob" type="2">
+      <values>
+        <value>true</value>
+        <value>false</value>
+      </values>
+      <basechoices />
+      <invalidValues />
+    </Parameter>
+    <Parameter id="2" name="log_merge" type="2">
+      <values>
+        <value>true</value>
+        <value>false</value>
+      </values>
+      <basechoices />
+      <invalidValues />
+    </Parameter>
+    <Parameter id="3" name="cleaning_mode" type="1">
+      <values>
+        <value>1</value>
+        <value>2</value>
+        <value>3</value>
+        <value>0</value>
+      </values>
+      <basechoices />
+      <invalidValues />
+    </Parameter>
+    <Parameter id="4" name="frequency" type="1">
+      <values>
+        <value>1</value>
+        <value>2</value>
+        <value>3</value>
+        <value>4</value>
+      </values>
+      <basechoices />
+      <invalidValues />
+    </Parameter>
+  </Parameters>
+  <OutputParameters />
+  <Relations />
+  <Constraints />
+  <Testset doi="3">
+    <Testcase TCNo="0">
+      <Value>1</Value>
+      <Value>true</Value>
+      <Value>true</Value>
+      <Value>1</Value>
+      <Value>1</Value>
+    </Testcase>
+    <Testcase TCNo="1">
+      <Value>2</Value>
+      <Value>false</Value>
+      <Value>false</Value>
+      <Value>1</Value>
+      <Value>1</Value>
+    </Testcase>
+    <Testcase TCNo="2">
+      <Value>3</Value>
+      <Value>true</Value>
+      <Value>false</Value>
+      <Value>1</Value>
+      <Value>2</Value>
+    </Testcase>
+    <Testcase TCNo="3">
+      <Value>4</Value>
+      <Value>false</Value>
+      <Value>true</Value>
+      <Value>1</Value>
+      <Value>2</Value>
+    </Testcase>
+    <Testcase TCNo="4">
+      <Value>5</Value>
+      <Value>true</Value>
+      <Value>true</Value>
+      <Value>1</Value>
+      <Value>3</Value>
+    </Testcase>
+    <Testcase TCNo="5">
+      <Value>6</Value>
+      <Value>false</Value>
+      <Value>false</Value>
+      <Value>1</Value>
+      <Value>3</Value>
+    </Testcase>
+    <Testcase TCNo="6">
+      <Value>7</Value>
+      <Value>true</Value>
+      <Value>true</Value>
+      <Value>1</Value>
+      <Value>4</Value>
+    </Testcase>
+    <Testcase TCNo="7">
+      <Value>8</Value>
+      <Value>false</Value>
+      <Value>false</Value>
+      <Value>1</Value>
+      <Value>4</Value>
+    </Testcase>
+    <Testcase TCNo="8">
+      <Value>9</Value>
+      <Value>true</Value>
+      <Value>false</Value>
+      <Value>2</Value>
+      <Value>1</Value>
+    </Testcase>
+    <Testcase TCNo="9">
+      <Value>10</Value>
+      <Value>false</Value>
+      <Value>true</Value>
+      <Value>2</Value>
+      <Value>1</Value>
+    </Testcase>
+    <Testcase TCNo="10">
+      <Value>11</Value>
+      <Value>true</Value>
+      <Value>true</Value>
+      <Value>2</Value>
+      <Value>2</Value>
+    </Testcase>
+    <Testcase TCNo="11">
+      <Value>12</Value>
+      <Value>false</Value>
+      <Value>false</Value>
+      <Value>2</Value>
+      <Value>2</Value>
+    </Testcase>
+    <Testcase TCNo="12">
+      <Value>13</Value>
+      <Value>true</Value>
+      <Value>false</Value>
+      <Value>2</Value>
+      <Value>3</Value>
+    </Testcase>
+    <Testcase TCNo="13">
+      <Value>14</Value>
+      <Value>false</Value>
+      <Value>true</Value>
+      <Value>2</Value>
+      <Value>3</Value>
+    </Testcase>
+    <Testcase TCNo="14">
+      <Value>15</Value>
+      <Value>true</Value>
+      <Value>false</Value>
+      <Value>2</Value>
+      <Value>4</Value>
+    </Testcase>
+    <Testcase TCNo="15">
+      <Value>16</Value>
+      <Value>false</Value>
+      <Value>true</Value>
+      <Value>2</Value>
+      <Value>4</Value>
+    </Testcase>
+    <Testcase TCNo="16">
+      <Value>17</Value>
+      <Value>true</Value>
+      <Value>true</Value>
+      <Value>3</Value>
+      <Value>1</Value>
+    </Testcase>
+    <Testcase TCNo="17">
+      <Value>18</Value>
+      <Value>false</Value>
+      <Value>false</Value>
+      <Value>3</Value>
+      <Value>1</Value>
+    </Testcase>
+    <Testcase TCNo="18">
+      <Value>19</Value>
+      <Value>true</Value>
+      <Value>false</Value>
+      <Value>3</Value>
+      <Value>2</Value>
+    </Testcase>
+    <Testcase TCNo="19">
+      <Value>20</Value>
+      <Value>false</Value>
+      <Value>true</Value>
+      <Value>3</Value>
+      <Value>2</Value>
+    </Testcase>
+    <Testcase TCNo="20">
+      <Value>21</Value>
+      <Value>true</Value>
+      <Value>true</Value>
+      <Value>3</Value>
+      <Value>3</Value>
+    </Testcase>
+    <Testcase TCNo="21">
+      <Value>22</Value>
+      <Value>false</Value>
+      <Value>false</Value>
+      <Value>3</Value>
+      <Value>3</Value>
+    </Testcase>
+    <Testcase TCNo="22">
+      <Value>23</Value>
+      <Value>true</Value>
+      <Value>true</Value>
+      <Value>3</Value>
+      <Value>4</Value>
+    </Testcase>
+    <Testcase TCNo="23">
+      <Value>24</Value>
+      <Value>false</Value>
+      <Value>false</Value>
+      <Value>3</Value>
+      <Value>4</Value>
+    </Testcase>
+    <Testcase TCNo="24">
+      <Value>25</Value>
+      <Value>true</Value>
+      <Value>true</Value>
+      <Value>0</Value>
+      <Value>1</Value>
+    </Testcase>
+    <Testcase TCNo="25">
+      <Value>26</Value>
+      <Value>false</Value>
+      <Value>false</Value>
+      <Value>0</Value>
+      <Value>1</Value>
+    </Testcase>
+    <Testcase TCNo="26">
+      <Value>27</Value>
+      <Value>true</Value>
+      <Value>false</Value>
+      <Value>0</Value>
+      <Value>2</Value>
+    </Testcase>
+    <Testcase TCNo="27">
+      <Value>28</Value>
+      <Value>false</Value>
+      <Value>true</Value>
+      <Value>0</Value>
+      <Value>2</Value>
+    </Testcase>
+    <Testcase TCNo="28">
+      <Value>29</Value>
+      <Value>true</Value>
+      <Value>true</Value>
+      <Value>0</Value>
+      <Value>3</Value>
+    </Testcase>
+    <Testcase TCNo="29">
+      <Value>30</Value>
+      <Value>false</Value>
+      <Value>false</Value>
+      <Value>0</Value>
+      <Value>3</Value>
+    </Testcase>
+    <Testcase TCNo="30">
+      <Value>31</Value>
+      <Value>true</Value>
+      <Value>true</Value>
+      <Value>0</Value>
+      <Value>4</Value>
+    </Testcase>
+    <Testcase TCNo="31">
+      <Value>32</Value>
+      <Value>false</Value>
+      <Value>false</Value>
+      <Value>0</Value>
+      <Value>4</Value>
+    </Testcase>
+  </Testset>
+  <Header>
+    <Value />
+    <Value>LOG_PROB</Value>
+    <Value>LOG_MERGE</Value>
+    <Value>CLEANING_MODE</Value>
+    <Value>FREQUENCY</Value>
+  </Header>
+  <Stat-Data>
+    <ExecutionTime>0.0</ExecutionTime>
+    <MaxDomainSize>4</MaxDomainSize>
+    <MinDomainSize>2</MinDomainSize>
+    <TotalNoOfCombination>96</TotalNoOfCombination>
+    <TotalNoOfTests>32</TotalNoOfTests>
+    <Algorithm>IPOG</Algorithm>
+  </Stat-Data>
+</System>
+
