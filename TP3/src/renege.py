@@ -16,13 +16,13 @@ class RENEGE:
         self.crud = CRUD()
         self.e_mail = EmailAnalyzer()
 
-    def classify_emails(self, mode, log_prob, log_merge, cleaning_mode):
+    def classify_emails(self, log_prob, log_merge, cleaning_mode):
         '''
         Description: fonction pour commencer l'analyse des e-mails.
         Sortie: bool, 'True' pour succes, 'False' dans le cas de failure.
         '''
         try:
-            self.process_email(self.get_email(), mode, log_prob, log_merge, cleaning_mode)
+            self.process_email(log_prob, log_merge, cleaning_mode)
             return True
         except Exception as e:
             print("Error!", e.__class__, "occurred.")
@@ -30,7 +30,7 @@ class RENEGE:
             return False
 
 
-    def process_email(self, new_emails, mode, log_prob, log_merge, cleaning_mode):
+    def process_email(self, log_prob, log_merge, cleaning_mode):
         '''
         Description: fonction pour analyser chaque nouvel e-mail dans le 
         dictionare. Elle gere l'ajout des nouveux utilisateurs et/ou modification
@@ -38,20 +38,20 @@ class RENEGE:
         Sortie: bool, 'True' pour succes, 'False' dans le cas de failure.
         '''
         emails = self.get_email()
-        print("Processing emails")
         i = 0
         email_count = len(emails["dataset"])
         # Load emails
+        print('')
         for email in emails["dataset"]:    
             i += 1
-            print("\rEmail " + str(i) + "/" + str(email_count), end="")
+            print("Email " + str(i) + "/" + str(email_count), end="")
 
             data    = email["mail"]
             subject = data["Subject"]
             name    = data["From"]
             date    = data["Date"]            
             body    = data["Body"]
-            is_spam = EmailAnalyzer.is_spam(subject, name, body, mode, log_prob, log_merge, cleaning_mode)
+            is_spam = self.e_mail.is_spam(subject, body, log_prob, log_merge, cleaning_mode)
 
             # Get registered data
             user_id = -1
@@ -82,9 +82,8 @@ class RENEGE:
 
                 except RuntimeError:
                     return False
-        
-        print("\n")
 
+        print('')
         return True
 
     def update_user_info(self, user_id, new_user_date, new_email_spam, new_email_ham):

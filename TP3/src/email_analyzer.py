@@ -33,8 +33,12 @@ class EmailAnalyzer:
         p_ham = 0
 
         if log_merge:
-            p_spam = math.exp(k * math.log(p_subject_spam) + (1 - k) * math.log(p_body_spam))
-            p_ham = math.exp(k * math.log(p_subject_ham) + (1 - k) * math.log(p_body_ham))
+            p_spam = k * math.log(p_subject_spam) if p_subject_spam > 0 else 0
+            p_spam += (1 - k) * math.log(p_body_spam) if p_body_spam > 0 else 0
+            p_spam = math.exp(p_spam)
+            p_ham = k * math.log(p_subject_ham) if p_subject_ham > 0 else 0
+            p_ham += (1 - k) * math.log(p_body_ham) if p_body_ham > 0 else 0
+            p_ham = math.exp(p_ham)
         else:
             p_spam = k * p_subject_spam + (1 - k) * p_body_spam
             p_ham = k * p_subject_ham + (1 - k) * p_body_ham

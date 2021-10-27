@@ -81,8 +81,6 @@ class RENEGE:
 
                 except RuntimeError:
                     return False
-        
-        print("\n")
 
         return True
 

@@ -51,7 +51,7 @@ class VocabularyCreator:
         # Analyze each email
         for email in dataset["dataset"]:
             i += 1
-            print("\rEmail " + str(i) + "/" + str(email_count), end="")
+            print("\rEmail " + str(i) + "/" + str(email_count), end="\r")
             
             # Get data
             data    = email["mail"]
@@ -119,7 +119,6 @@ class VocabularyCreator:
         with open(self.vocabulary, "w") as outfile:
             json.dump(self.voc_data, outfile, indent=4)
 
-        print("\n")
         return True
 
     def load_dict(self):  # pragma: no cover

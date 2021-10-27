@@ -6,7 +6,9 @@ from text_cleaner import TextCleaning
 class VocabularyCreator:
     """Class for creating vocabulary of spam and non-spam messages"""
 
-    def __init__(self):
+    def __init__(self, frequency, mode):
+        self.frequency = frequency
+        self.mode = mode
         self.train_set  = "train_set.json"
         self.cleaning   = TextCleaning()
         self.vocabulary = "vocabulary.json"
@@ -101,6 +103,32 @@ class VocabularyCreator:
                         occ_ham_bod[wd] = 1
                     else:
                         occ_ham_bod[wd] += 1
+        # Remove word from the dictionary if total < frequency
+        if self.frequency > 1:
+            words_to_remove = []
+            for word in occ_spam_bod.keys():
+                if occ_spam_bod[word] < self.frequency:
+                    words_to_remove.append(word)
+            for word in words_to_remove:
+                occ_spam_bod.pop(word)
+            words_to_remove = []
+            for word in occ_ham_bod.keys():
+                if occ_ham_bod[word] < self.frequency:
+                    words_to_remove.append(word)
+            for word in words_to_remove:
+                occ_ham_bod.pop(word)
+            words_to_remove = []
+            for word in occ_spam_sub.keys():
+                if occ_spam_sub[word] < self.frequency:
+                    words_to_remove.append(word)
+            for word in words_to_remove:
+                occ_spam_sub.pop(word)
+            words_to_remove = []
+            for word in occ_ham_sub.keys():
+                if occ_ham_sub[word] < self.frequency:
+                    words_to_remove.append(word)
+            for word in words_to_remove:
+                occ_ham_sub.pop(word)
 
         # Create the data dictionary
         p_sub_spam  = self.compute_proba(occ_spam_sub, total_occ_spam_sub)
@@ -137,4 +165,4 @@ class VocabularyCreator:
             return False
     
     def clean_text(self, text):  # pragma: no cover
-        return self.cleaning.clean_text(text)
+        return self.cleaning.clean_text(text, self.mode)
