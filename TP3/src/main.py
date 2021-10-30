@@ -52,40 +52,45 @@ def evaluate(log_prob, log_merge, cleaning_mode):
 
 if __name__ == "__main__":
 
-
     BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
     results = []
 
     test_number = 0
-    with open(os.path.join(BASE_DIR, "ACTS", "output.csv")) as ACTS_parameters:
-        print(ACTS_parameters.readline()) # parameters used
-        line = ACTS_parameters.readline()
+    with open(os.path.join(BASE_DIR, "ACTS", "output.csv")) as ACTS_parameters_file:
+        print(ACTS_parameters_file.readline())  # parameters used
+        line = ACTS_parameters_file.readline()
+        # On parcours chaque set de paramètres
         while line:
+            # 0. Formattage des paramètres
             [log_prob, log_merge, cleaning_mode, frequency] = line.split(',')
             print_line = "{:>15}" * 4
             print(print_line.format('Log Prob', 'log merge', 'cleaning mode', "min frequency"))
             print(print_line.format(log_prob, log_merge, cleaning_mode, frequency))
 
-            # reformat variables
             log_prob = log_prob == "true"
             log_merge = log_merge == 'true'
             cleaning_mode = int(cleaning_mode)
             frequency = int(frequency)
+
             # 1. Creation de vocabulaire.
             vocab = VocabularyCreator(frequency, cleaning_mode)
             vocab.create_vocab()
+
             # 2. Classification des emails et initialisation de utilisateurs et groupes.
             renege = RENEGE()
             renege.classify_emails(log_prob, log_merge, cleaning_mode)
 
-            #3. Evaluation de performance du modele avec la fonction evaluate()
+            # 3. Evaluation de performance du modele avec la fonction evaluate()
             evaluation = evaluate(log_prob, log_merge, cleaning_mode)
             results.append([str(test_number)] + [log_prob, log_merge, cleaning_mode, frequency] + evaluation)
-            #nouvelle line
+
+            # 4. On passe au jeu de paramètres suivant
             test_number += 1
-            line = ACTS_parameters.readline()
+            line = ACTS_parameters_file.readline()
+    # On crée le dossier results.csv qui contiendra tous nos résultats de tests
     with open('results.csv', "w") as results_file:
         writer = csv.writer(results_file)
-        writer.writerow(['Test number', 'log prob', 'log merge', 'cleaning mode', 'frequency', 'accuracy', 'precision', 'recall'])
+        writer.writerow(
+            ['Test number', 'log prob', 'log merge', 'cleaning mode', 'frequency', 'accuracy', 'precision', 'recall'])
         writer.writerows(results)
