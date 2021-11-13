@@ -8,7 +8,7 @@ class CRUD:
     Classe pour realiser la fonctionalite CRUD.
     """
 
-    def __init__(self):
+    def __init__(self, _users_data=None, _groups_data=None):
         # Init the lookup tables
         self.users_lookup = {}
         self.groups_lookup = {}
@@ -17,15 +17,26 @@ class CRUD:
         self.users_file = "users.json"
         self.groups_file = "groups.json"
 
-        # Load data from the files
-        try:
-            self.users_data = self.read_users_file()
-            self.groups_data = self.read_groups_file()
-        except:
-            # We could not load the data
-            self.users_data = {}
-            self.groups_data = {}
-            pass
+        if _users_data:
+            # Initialize from constructor
+            self.users_data = _users_data
+        else:
+            # Load data from the files
+            try:
+                self.users_data = self.read_users_file()
+            except:
+                # We could not load the data
+                self.users_data = {}
+        if _groups_data:
+            # Initialize from constructor
+            self.groups_data = _groups_data
+        else:
+            # Load data from the files
+            try:
+                self.groups_data = self.read_groups_file()
+            except:
+                # We could not load the data
+                self.groups_data = {}
         # Fill the lookup tables, the name are the tables' keys
         for key in self.users_data:
             self.users_lookup[self.users_data[key]["name"]] = key
