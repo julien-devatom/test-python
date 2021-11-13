@@ -163,7 +163,9 @@ class CRUD:
             return False
         # print(self.groups_data)
         # Success
-        return self.modify_groups_file(self.groups_data)
+        if self.modify_groups_file(self.groups_data):
+            return self.groups_data
+        return False
 
     ###***********READ****************
     def read_users_file(self):  # pragma: no cover mocked
@@ -408,7 +410,9 @@ class CRUD:
         except RuntimeError:  # pragma: no cover
             return False
 
-        return self.modify_groups_file(self.groups_data)
+        if self.modify_groups_file(self.groups_data):
+            return self.groups_data
+        return False
 
     ##***********DELETE***********************
 
@@ -490,7 +494,9 @@ class CRUD:
         except RuntimeError:  # pragma: no cover
             return False
 
-        return self.modify_groups_file(self.groups_data)
+        if self.modify_groups_file(self.groups_data):
+            return self.groups_data
+        return False
 
     def remove_group_member(self, group_id, member):
         '''
@@ -510,4 +516,6 @@ class CRUD:
         # Remove from group
         self.groups_data[group_id]["List_of_members"].remove(member)
 
-        return self.modify_groups_file(self.groups_data)
+        if self.modify_groups_file(self.groups_data):
+            return self.groups_data
+        return False
