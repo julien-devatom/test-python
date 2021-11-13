@@ -122,7 +122,9 @@ class CRUD:
         self.update_groups(default_id, "List_of_members", default_list)
 
         # Success
-        return self.modify_users_file(self.users_data)
+        if self.modify_users_file(self.users_data):
+            return self.users_data
+        return False
 
     def add_new_group(self, name, trust, members_list):
         '''
@@ -342,7 +344,9 @@ class CRUD:
         except RuntimeError:  # pragma: no cover
             return False
 
-        return self.modify_users_file(self.users_data)
+        if self.modify_users_file(self.users_data):
+            return self.users_data
+        return False
 
     def update_groups(self, group_id, field, data):
         '''
@@ -429,7 +433,9 @@ class CRUD:
         except RuntimeError:  # pragma: no cover
             return False
 
-        return self.modify_users_file(self.users_data)
+        if self.modify_users_file(self.users_data):
+            return self.users_data
+        return False
 
     def remove_user_group(self, user_id, group_name):
         '''
@@ -458,7 +464,9 @@ class CRUD:
         except RuntimeError:  # pragma: no cover
             return False
 
-        return self.modify_users_file(self.users_data)
+        if self.modify_users_file(self.users_data):
+            return self.users_data
+        return False
 
     def remove_group(self, group_id):
         '''
