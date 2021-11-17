@@ -36,12 +36,16 @@ def evaluate(test_set_filename="test_set.json"):
         if (not (analyzer.is_spam(subject, body))) and (spam == "true"):
             fn += 1
         total += 1
-
+    accuracy = round((tp + tn) / (tp + tn + fp + fn), 2)
+    precision = round(tp / (tp + fp), 2)
+    recall = round(tp / (tp + fn), 2)
     print("")
-    print("\nAccuracy: ", round((tp + tn) / (tp + tn + fp + fn), 2))
-    print("Precision: ", round(tp / (tp + fp), 2))
-    print("Recall: ", round(tp / (tp + fn), 2))
-    return True
+    print(i, "emails tested")
+    return {
+        "accuracy": accuracy,
+        "precision": precision,
+        "recall": recall
+    }
 
 
 if __name__ == "__main__":

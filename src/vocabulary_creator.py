@@ -51,7 +51,7 @@ class VocabularyCreator:
         # Analyze each email
         for email in dataset["dataset"]:
             i += 1
-            print("\rEmail " + str(i) + "/" + str(email_count), end="\r")
+            print("\r Email " + str(i) + "/" + str(email_count), end="")
 
             # Get data
             data = email["mail"]
@@ -101,7 +101,7 @@ class VocabularyCreator:
                         occ_ham_bod[wd] = 1
                     else:
                         occ_ham_bod[wd] += 1
-
+        print('')
         # Create the data dictionary
         p_sub_spam = self.compute_proba(occ_spam_sub, total_occ_spam_sub)
         p_sub_ham = self.compute_proba(occ_ham_sub, total_occ_ham_sub)
