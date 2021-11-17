@@ -4,14 +4,14 @@ from renege import RENEGE
 from email_analyzer import EmailAnalyzer
 
 
-def evaluate():
+def evaluate(test_set_filename="test_set.json"):
     tp = 0
     tn = 0
     fp = 0
     fn = 0
     total = 0
     analyzer = EmailAnalyzer()
-    with open("test_set.json") as email_file:
+    with open(test_set_filename) as email_file:
         new_emails = json.load(email_file)
 
     i = 0
@@ -36,7 +36,7 @@ def evaluate():
         if (not (analyzer.is_spam(subject, body))) and (spam == "true"):
             fn += 1
         total += 1
-    
+
     print("")
     print("\nAccuracy: ", round((tp + tn) / (tp + tn + fp + fn), 2))
     print("Precision: ", round(tp / (tp + fp), 2))
@@ -45,7 +45,6 @@ def evaluate():
 
 
 if __name__ == "__main__":
-
     # 1. Creation de vocabulaire.
     vocab = VocabularyCreator()
     vocab.create_vocab()
@@ -54,5 +53,5 @@ if __name__ == "__main__":
     renege = RENEGE()
     renege.classify_emails()
 
-    #3. Evaluation de performance du modele avec la fonction evaluate()
+    # 3. Evaluation de performance du modele avec la fonction evaluate()
     evaluate()
