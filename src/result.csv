@@ -1,0 +1,9 @@
+property number,train filename,test filename,initial accuracy,new accuracy,difference,is test passed
+1,train700_mails.json,test_set.json,0.68,0.68,0.0,True
+1,train_set.json,test300_mails.json,0.68,0.68,0.0,True
+1,train700_words.json,test_set.json,0.68,0.68,0.0,True
+1,train_set.json,test300_words.json,0.68,0.68,0.0,True
+1,train700x2.json,test_set.json,0.68,0.68,0.0,True
+1,train_set.json,test300x2.json,0.68,0.68,0.0,True
+1,train700_noise.json,test_set.json,0.68,0.68,0.0,True
+1,train_set.json,test300_noise.json,0.68,0.67,0.010000000000000009,True
