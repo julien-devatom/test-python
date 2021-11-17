@@ -10,8 +10,8 @@ class RENEGE:
     """Class pour realiser le filtrage du spam en utilisant vocabular.json file et
     CRUD et EmalAnalyze classes"""
 
-    def __init__(self):
-        self.email_file = "train_set.json"
+    def __init__(self, train_set_filename="train_set.json"):
+        self.email_file = train_set_filename
         self.crud = CRUD()
         self.e_mail = EmailAnalyzer()
 
@@ -21,12 +21,11 @@ class RENEGE:
         Sortie: bool, 'True' pour succes, 'False' dans le cas de failure.
         '''
         try:
-            self.process_email(self.get_email())
-            return True
+            res = self.process_email(self.get_email())
+            return res
         except Exception as e:
             print("Error!", e.__class__, "occurred.")
             raise e
-            return False
 
 
     def process_email(self, new_emails):
@@ -56,13 +55,15 @@ class RENEGE:
             user_id = -1
             try:
                 user_id = self.crud.get_user_id(name)
+                if not user_id:
+                    self.crud.add_new_user(name, date)
+                    user_id = self.crud.get_user_id(name)
             except RuntimeError:
                 # Create the user
                 if not self.crud.add_new_user(name, date):
                     return False
 
-                user_id = self.crud.get_user_id(name) 
-
+                user_id = self.crud.get_user_id(name)
             # Update user's emails info
             if is_spam == "true":
                 if not self.update_user_info(user_id, date, 1, 0):
@@ -81,7 +82,8 @@ class RENEGE:
 
                 except RuntimeError:
                     return False
-
+        print("")
+        print(i, "emails proccessed")
         return True
 
     def update_user_info(self, user_id, new_user_date, new_email_spam, new_email_ham):
